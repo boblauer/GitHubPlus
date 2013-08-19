@@ -31,7 +31,8 @@
    transition: color 500ms linear;
 }
 
-#ghplus-container > div {
+#ghplus-container > .discussion-bubble-inner {
+  background: #eee;
   padding: 15px;
   padding-right: 10px;
   min-height: 0;
@@ -61,7 +62,7 @@
 }
 
 #ghplus-container .footnote span {
-  color: #999;
+  color: #777;
   font-size: 9px;
   font-style: italic;
 }
