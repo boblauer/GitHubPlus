@@ -3,7 +3,6 @@
 }
 
 #ghplus-container {
-  margin-left: 60px;
   margin-top: 20px;
   position: relative;
 }
@@ -40,7 +39,7 @@
 
 #ghplus-container span > input {
   color: #333;
-  margin: 0 10px;
+  margin: 0 35px 0 10px;
   padding-left: 3px;
   border: 1px solid #aaa;
   border-radius: 2px;

@@ -29,7 +29,8 @@ function getHTML() {
         '</span>',
         '<div class="footnote"><span>Last edited by <span class="updated-by">{{updatedBy}}</span> on <span class="updated-on">{{updatedOn}}</span></span></div>',
       '</div>',
-    '</div>'
+    '</div>',
+    '<div class="closed-banner"></div>'
   ].join('');
 }
 
