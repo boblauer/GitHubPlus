@@ -22,8 +22,7 @@
   // "commands": ...,
   // "content_pack": ...,
   "content_scripts": [{
-    //https://github.com/ifit/ifit/issues/1039
-    "matches": ["https://github.com/*/*/issues/*", "https://github.com/ifit/ifit/issues/1039"],
+    "matches": ["https://github.com/*/*/issues/*"],
     "js": ["js/_inject.js"],
     "css": ["css/jquery-ui-1.10.3.custom.css", "css/ghplus.css"],
     "run_at": "document_end"
@@ -34,7 +33,7 @@
   // "devtools_page": ...,
   // "externally_connectable": {"matches": ["*://*.example.com/*"]},
   // "file_browser_handlers": [...],
-  // "homepage_url": "http://path/to/homepage",
+  "homepage_url": "https://github.com/boblauer/GitHubPlus",
   // "import": ...,
   // "incognito": "spanning or split",
   // "input_components": ...,
