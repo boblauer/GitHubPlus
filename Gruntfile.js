@@ -1,20 +1,29 @@
 module.exports = function(grunt) {
 
+  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-concat');
 
-  // Project configuration.
   grunt.initConfig({
-    concat: {
-      options: {
-        separator: ';',
-      },
-      dist: {
-        src: ['chrome/js/jquery-1.9.1.js', 'chrome/js/jquery-ui-1.10.3.custom.js', 'chrome/js/main.js'],
-        dest: 'chrome/js/ghplus.js',
-      },
-    },
+    browserify: {
+      app: {
+        src: ['chrome/js/app.js'],
+        dest: 'chrome/js/out/ghplus.js',
+        options: {
+          alias: [
+            'chrome/js/libs/jquery-shim.js:jquery',
+            'chrome/js/libs/parse.js:parse'
+          ],
+          shim: {
+            jqueryui: {
+              path: 'chrome/js/libs/jquery-ui-1.10.3.custom.js',
+              exports: ''
+            }
+          }
+        }
+      }
+    }
   });
 
-  grunt.registerTask('default', ['concat']);
+  grunt.registerTask('default', ['browserify']);
 
 };

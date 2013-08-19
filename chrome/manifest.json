@@ -1,8 +1,8 @@
 {
   // Required
   "manifest_version": 2,
-  "name": "GitHub Plus",
-  "version": "0.1.0",
+  "name": "GitHub+",
+  "version": "0.3.0",
 
   // Recommended
   // "default_locale": "en",
@@ -25,7 +25,7 @@
     //https://github.com/ifit/ifit/issues/1039
     "matches": ["https://github.com/*/*/issues/*", "https://github.com/ifit/ifit/issues/1039"],
     "js": ["js/_inject.js"],
-    "css": ["css/jquery-ui-1.10.3.custom.css"],
+    "css": ["css/jquery-ui-1.10.3.custom.css", "css/ghplus.css"],
     "run_at": "document_end"
   }],
   // "content_security_policy": "policyString",
@@ -62,7 +62,7 @@
   // "tts_engine": ...,
   // "update_url": "http://path/to/updateInfo.xml",
   "web_accessible_resources": [
-    "js/ghplus.js",
+    "js/out/ghplus.js",
     "css/images/animated-overlay.gif",
     "css/images/ui-bg_diagonals-thick_18_b81900_40x40.png",
     "css/images/ui-bg_diagonals-thick_20_666666_40x40.png",

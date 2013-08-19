@@ -1,0 +1,68 @@
+.gh-plus div.ui-datepicker {
+  font-size: 10px;
+}
+
+#ghplus-container {
+  margin-left: 60px;
+  margin-top: 20px;
+  position: relative;
+}
+
+#ghplus-container:before {
+    color: transparent;
+    -webkit-transition: color 200ms linear;
+    -moz-transition: color 200ms linear;
+    -o-transition: color 200ms linear;
+    -ms-transition: color 200ms linear;
+    transition: color 200ms linear;
+
+    display: inline;
+    position: absolute;
+    left: -50px;
+    font-size: 44px;
+    content:"\2713\0020";
+}
+
+#ghplus-container.saved:before {
+   color: green;
+   -webkit-transition: color 500ms linear;
+   -moz-transition: color 500ms linear;
+   -o-transition: color 500ms linear;
+   -ms-transition: color 500ms linear;
+   transition: color 500ms linear;
+}
+
+#ghplus-container > div {
+  padding: 15px;
+  padding-right: 10px;
+  min-height: 0;
+}
+
+#ghplus-container span > input {
+  color: #333;
+  margin: 0 10px;
+  padding-left: 3px;
+  border: 1px solid #aaa;
+  border-radius: 2px;
+}
+
+#ghplus-container .button-container {
+  float: right;
+}
+
+#ghplus-container .button-container .minibutton {
+  line-height: 20px;
+  top: -1px;
+  margin-left: 10px;
+}
+
+#ghplus-container .footnote {
+  display: none;
+  margin-bottom: -10px;
+}
+
+#ghplus-container .footnote span {
+  color: #999;
+  font-size: 9px;
+  font-style: italic;
+}
