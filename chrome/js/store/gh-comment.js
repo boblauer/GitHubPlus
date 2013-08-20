@@ -18,7 +18,7 @@ GitHubComment._findLatest = function() {
 };
 
 GitHubComment._getCommentData = function(codeElement) {
-  return JSON.parse(codeElement.prev().text());
+  return this._deserialize(codeElement.prev().text());
 };
 
 GitHubComment._getLatestCommentData = function() {
@@ -41,15 +41,15 @@ GitHubComment._hideAll = function() {
   this._getContainer(this._findAll()).hide();
 };
 
-GitHubComment.serialize = function(data) {
+GitHubComment._serialize = function(data) {
   return JSON.stringify(data);
 };
 
-GitHubComment.deserialize = function(data) {
+GitHubComment._deserialize = function(data) {
   return JSON.parse(data);
 };
 
-GitHubComment.buildComment = function(data) {
+GitHubComment._buildComment = function(data) {
   var fullMessage = 'If you can see this, you do not have GitHub+ installed.  To install the extension, please visit: ';
   fullMessage += '\n';
   fullMessage += '`' + this.config.commentKey + '``' + data + '``' + this.config.commentKey + '`';
@@ -57,25 +57,11 @@ GitHubComment.buildComment = function(data) {
   return fullMessage;
 }
 
-GitHubComment.save = function(data, cb) {
-  data = this.buildComment(this.serialize(data));
-
-  var latestComment = this._findLatest();
-  if (latestComment.length && this.canEdit(latestComment)) {
-    this.waitForUpdateDone(latestComment, cb);
-    this.updateExistingComment(latestComment, data);
-  }
-  else {
-    this.waitForCreateDone(cb);
-    this.createNewComment(data);
-  }
-};
-
-GitHubComment.canEdit = function(latestComment) {
+GitHubComment._canEdit = function(latestComment) {
   return !!latestComment.parents('.comment:first').find('.js-comment-edit-button').length;
 };
 
-GitHubComment.waitForCreateDone = function(cb) {
+GitHubComment._waitForCreateDone = function(cb) {
   var commentCount = $('div.discussion-bubble').length;
 
   var interval = setInterval(function() {
@@ -93,7 +79,7 @@ GitHubComment.waitForCreateDone = function(cb) {
   }, 200);
 };
 
-GitHubComment.waitForUpdateDone = function(latestComment, cb) {
+GitHubComment._waitForUpdateDone = function(latestComment, cb) {
   latestComment.attr('ghplus', true);
   var container = this._getContainer(latestComment);
 
@@ -119,19 +105,19 @@ GitHubComment.errorOccurred = function() {
   return !!error.length
 }
 
-GitHubComment.createNewComment = function(text) {
-  this.setTextAndSave($('.write-content').find('textarea'), text);
+GitHubComment._createNewComment = function(text) {
+  this._setTextAndSave($('.write-content').find('textarea'), text);
 };
 
-GitHubComment.updateExistingComment = function(commentField, text) {
+GitHubComment._updateExistingComment = function(commentField, text) {
   var commentId = commentField.parents('div[id^=issuecomment]').attr('id').split('-')[1]
     , commentField = $('textarea[data-suggester=issue_comment_' + commentId + '_suggester]')
     ;
 
-   this.setTextAndSave(commentField, text);
+   this._setTextAndSave(commentField, text);
 };
 
-GitHubComment.setTextAndSave = function(textArea, text) {
+GitHubComment._setTextAndSave = function(textArea, text) {
   var saveButtonSelector = 'button[type=submit]';
   textArea.val(text);
 
@@ -149,9 +135,22 @@ GitHubComment.setTextAndSave = function(textArea, text) {
   }
 };
 
+GitHubComment.save = function(data, cb) {
+  data = this._buildComment(this._serialize(data));
+
+  var latestComment = this._findLatest();
+  if (latestComment.length && this._canEdit(latestComment)) {
+    this._waitForUpdateDone(latestComment, cb);
+    this._updateExistingComment(latestComment, data);
+  }
+  else {
+    this._waitForCreateDone(cb);
+    this._createNewComment(data);
+  }
+};
+
 GitHubComment.load = function() {
   this._hideAll();
-
   return this._getLatestCommentData();
 };
 

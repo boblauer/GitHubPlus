@@ -15,11 +15,11 @@ function PlusData(currentUser) {
   this.user = currentUser;
 }
 
-PlusData.prototype.formatDate = function(date) {
+PlusData.prototype._formatDate = function(date) {
   return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
 };
 
-PlusData.prototype.getSaveData = function() {
+PlusData.prototype._getSaveData = function() {
   return {
     dueDate: this.dueDate,
     estimate: this.estimate,
@@ -28,20 +28,17 @@ PlusData.prototype.getSaveData = function() {
   };
 };
 
-// TODO: Callback possible?
 PlusData.prototype.save = function(cb) {
   this.updatedBy = this.user;
-  this.updatedOn = this.formatDate(new Date());
+  this.updatedOn = this._formatDate(new Date());
 
-  this.store.save(this.getSaveData(), cb);
+  this.store.save(this._getSaveData(), cb);
 };
 
 PlusData.prototype.load = function() {
   var data = this.store.load();
   $.extend(this, data);
 };
-
-PlusData.prototype
 
 module.exports = PlusData;
 

@@ -10,35 +10,35 @@ function PlusDataView(model) {
   this.el = template(model);
   this.updateFooter();
 
-  this.bind();
+  this._bind();
 
   // TODO: Does this belong in the model?
-  this.setClean();
+  this._setClean();
 }
 
-PlusDataView.prototype.setClean = function(dueDate, estimate) {
+PlusDataView.prototype._setClean = function(dueDate, estimate) {
   this.clean = {
     dueDate: this.model.dueDate,
     estimate: this.model.estimate
   };
 };
 
-PlusDataView.prototype.bind = function() {
+PlusDataView.prototype._bind = function() {
   this.el
-    .on('change', '#ghplus-due-date', $.proxy(this.dueDateChanged, this))
-    .on('change', '#ghplus-estimated-hours', $.proxy(this.estimateChanged, this))
-    .on('click', '#ghplus-cancel', $.proxy(this.cancel, this))
-    .on('click', '#ghplus-save', $.proxy(this.save, this));
+    .on('change', '#ghplus-due-date', $.proxy(this._dueDateChanged, this))
+    .on('change', '#ghplus-estimated-hours', $.proxy(this._estimateChanged, this))
+    .on('click', '#ghplus-_cancel', $.proxy(this._cancel, this))
+    .on('click', '#ghplus-save', $.proxy(this._save, this));
 };
 
-PlusDataView.prototype.cancel = function(e, el) {
+PlusDataView.prototype._cancel = function(e, el) {
   e.preventDefault();
 
   this.el.find('#ghplus-due-date').val(this.clean.dueDate);
   this.el.find('#ghplus-estimated-hours').val(this.clean.estimate);
 };
 
-PlusDataView.prototype.save = function(e, el) {
+PlusDataView.prototype._save = function(e, el) {
   e.preventDefault();
 
   // TODO: Move isDirty to the model?  Probably.
@@ -48,15 +48,15 @@ PlusDataView.prototype.save = function(e, el) {
       if (!err) {
         container.hide();
 
-        self.flashSave();
-        self.setClean();
+        self._flashSave();
+        self._setClean();
         self.updateFooter();
       }
     });
   }
 };
 
-PlusDataView.prototype.flashSave = function() {
+PlusDataView.prototype._flashSave = function() {
   this.el.addClass('saved');
 
   var self = this;
@@ -65,11 +65,11 @@ PlusDataView.prototype.flashSave = function() {
   }, 2000);
 }
 
-PlusDataView.prototype.dueDateChanged = function() {
+PlusDataView.prototype._dueDateChanged = function() {
   this.model.dueDate = this.el.find('#ghplus-due-date').val();
 };
 
-PlusDataView.prototype.estimateChanged = function() {
+PlusDataView.prototype._estimateChanged = function() {
   this.model.estimate = this.el.find('#ghplus-estimated-hours').val();
 };
 
@@ -80,7 +80,7 @@ PlusDataView.prototype.isDirty = function() {
 PlusDataView.prototype.prependTo = function(parent) {
   $(parent).prepend(this.el);
 
-  // This is a fix for a jquery bug.
+  // fix for http://bugs.jqueryui.com/ticket/8989
   $("#ui-datepicker-div").wrap('<div class="gh-plus" />');
 };
 
