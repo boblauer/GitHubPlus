@@ -2,7 +2,7 @@
   // Required
   "manifest_version": 2,
   "name": "GitHub+",
-  "version": "0.4.0",
+  "version": "0.5.0",
 
   // Recommended
   // "default_locale": "en",
@@ -61,7 +61,7 @@
   // "tts_engine": ...,
   // "update_url": "http://path/to/updateInfo.xml",
   "web_accessible_resources": [
-    "js/out/ghplus.js",
+    "js/ghplus.js",
     "css/images/animated-overlay.gif",
     "css/images/ui-bg_diagonals-thick_18_b81900_40x40.png",
     "css/images/ui-bg_diagonals-thick_20_666666_40x40.png",

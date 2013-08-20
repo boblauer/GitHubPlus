@@ -19,7 +19,7 @@ function init() {
 }
 
 init();
-},{"./models/plus-data":6,"./views/plus-data":11,"jquery":"cKzUTx","jqueryui":"gBND6t"}],2:[function(require,module,exports){
+},{"./models/plus-data":6,"./views/plus-data":12,"jquery":"9MIV+n","jqueryui":"MxOOMP"}],2:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.0.0
  * http://jquery.com/
@@ -8775,11 +8775,11 @@ if ( typeof window === "object" && typeof window.document === "object" ) {
 }
 
 })( window );
-},{}],"cKzUTx":[function(require,module,exports){
+},{}],"9MIV+n":[function(require,module,exports){
 var $ = require('./jquery-2.0.0');
 
 module.exports = $.noConflict();
-},{"./jquery-2.0.0":2}],"gBND6t":[function(require,module,exports){
+},{"./jquery-2.0.0":2}],"MxOOMP":[function(require,module,exports){
 var global=self;(function browserifyShim(module, define) {
 /*! jQuery UI - v1.10.3 - 2013-08-15
 * http://jqueryui.com
@@ -11124,7 +11124,7 @@ $.datepicker.version = "1.10.3";
 
 }).call(global, module, undefined);
 
-},{}],"j14OBD":[function(require,module,exports){
+},{}],"E7sp4P":[function(require,module,exports){
 "use strict";
 
 function parse(s, o) {
@@ -11152,11 +11152,11 @@ function PlusData(currentUser) {
   this.user = currentUser;
 }
 
-PlusData.prototype.formatDate = function(date) {
+PlusData.prototype._formatDate = function(date) {
   return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
 };
 
-PlusData.prototype.getSaveData = function() {
+PlusData.prototype._getSaveData = function() {
   return {
     dueDate: this.dueDate,
     estimate: this.estimate,
@@ -11165,12 +11165,11 @@ PlusData.prototype.getSaveData = function() {
   };
 };
 
-// TODO: Callback possible?
 PlusData.prototype.save = function(cb) {
   this.updatedBy = this.user;
-  this.updatedOn = this.formatDate(new Date());
+  this.updatedOn = this._formatDate(new Date());
 
-  this.store.save(this.getSaveData(), cb);
+  this.store.save(this._getSaveData(), cb);
 };
 
 PlusData.prototype.load = function() {
@@ -11178,12 +11177,10 @@ PlusData.prototype.load = function() {
   $.extend(this, data);
 };
 
-PlusData.prototype
-
 module.exports = PlusData;
 
 
-},{"../store/gh-comment":7,"jquery":"cKzUTx"}],7:[function(require,module,exports){
+},{"../store/gh-comment":7,"jquery":"9MIV+n"}],7:[function(require,module,exports){
 "use strict";
 
 var $ = require('jquery');
@@ -11204,7 +11201,7 @@ GitHubComment._findLatest = function() {
 };
 
 GitHubComment._getCommentData = function(codeElement) {
-  return JSON.parse(codeElement.prev().text());
+  return this._deserialize(codeElement.prev().text());
 };
 
 GitHubComment._getLatestCommentData = function() {
@@ -11227,15 +11224,15 @@ GitHubComment._hideAll = function() {
   this._getContainer(this._findAll()).hide();
 };
 
-GitHubComment.serialize = function(data) {
+GitHubComment._serialize = function(data) {
   return JSON.stringify(data);
 };
 
-GitHubComment.deserialize = function(data) {
+GitHubComment._deserialize = function(data) {
   return JSON.parse(data);
 };
 
-GitHubComment.buildComment = function(data) {
+GitHubComment._buildComment = function(data) {
   var fullMessage = 'If you can see this, you do not have GitHub+ installed.  To install the extension, please visit: ';
   fullMessage += '\n';
   fullMessage += '`' + this.config.commentKey + '``' + data + '``' + this.config.commentKey + '`';
@@ -11243,25 +11240,11 @@ GitHubComment.buildComment = function(data) {
   return fullMessage;
 }
 
-GitHubComment.save = function(data, cb) {
-  data = this.buildComment(this.serialize(data));
-
-  var latestComment = this._findLatest();
-  if (latestComment.length && this.canEdit(latestComment)) {
-    this.waitForUpdateDone(latestComment, cb);
-    this.updateExistingComment(latestComment, data);
-  }
-  else {
-    this.waitForCreateDone(cb);
-    this.createNewComment(data);
-  }
-};
-
-GitHubComment.canEdit = function(latestComment) {
+GitHubComment._canEdit = function(latestComment) {
   return !!latestComment.parents('.comment:first').find('.js-comment-edit-button').length;
 };
 
-GitHubComment.waitForCreateDone = function(cb) {
+GitHubComment._waitForCreateDone = function(cb) {
   var commentCount = $('div.discussion-bubble').length;
 
   var interval = setInterval(function() {
@@ -11279,7 +11262,7 @@ GitHubComment.waitForCreateDone = function(cb) {
   }, 200);
 };
 
-GitHubComment.waitForUpdateDone = function(latestComment, cb) {
+GitHubComment._waitForUpdateDone = function(latestComment, cb) {
   latestComment.attr('ghplus', true);
   var container = this._getContainer(latestComment);
 
@@ -11305,19 +11288,19 @@ GitHubComment.errorOccurred = function() {
   return !!error.length
 }
 
-GitHubComment.createNewComment = function(text) {
-  this.setTextAndSave($('.write-content').find('textarea'), text);
+GitHubComment._createNewComment = function(text) {
+  this._setTextAndSave($('.write-content').find('textarea'), text);
 };
 
-GitHubComment.updateExistingComment = function(commentField, text) {
+GitHubComment._updateExistingComment = function(commentField, text) {
   var commentId = commentField.parents('div[id^=issuecomment]').attr('id').split('-')[1]
     , commentField = $('textarea[data-suggester=issue_comment_' + commentId + '_suggester]')
     ;
 
-   this.setTextAndSave(commentField, text);
+   this._setTextAndSave(commentField, text);
 };
 
-GitHubComment.setTextAndSave = function(textArea, text) {
+GitHubComment._setTextAndSave = function(textArea, text) {
   var saveButtonSelector = 'button[type=submit]';
   textArea.val(text);
 
@@ -11335,18 +11318,34 @@ GitHubComment.setTextAndSave = function(textArea, text) {
   }
 };
 
+GitHubComment.save = function(data, cb) {
+  data = this._buildComment(this._serialize(data));
+
+  var latestComment = this._findLatest();
+  if (latestComment.length && this._canEdit(latestComment)) {
+    this._waitForUpdateDone(latestComment, cb);
+    this._updateExistingComment(latestComment, data);
+  }
+  else {
+    this._waitForCreateDone(cb);
+    this._createNewComment(data);
+  }
+};
+
 GitHubComment.load = function() {
   this._hideAll();
-
   return this._getLatestCommentData();
 };
 
 module.exports = GitHubComment;
-},{"jquery":"cKzUTx"}],8:[function(require,module,exports){
+},{"jquery":"9MIV+n"}],"jquery":[function(require,module,exports){
+module.exports=require('9MIV+n');
+},{}],9:[function(require,module,exports){
 "use strict";
 
-var $ = require('jquery')
-  , parse = require('parse')
+var $         = require('jquery')
+  , parse     = require('parse')
+  , fieldData = require('template');
   ;
 
 require('jqueryui');
@@ -11360,14 +11359,21 @@ function buildTemplate(locals) {
     .end();
 }
 
+function buildFieldsHTML() {
+  var html = '';
+  $.each(fieldData, function(index, data) {
+    html += '<label for="' + data.id + '">' + data.label + ':</label>';
+    html += '<span><input id="' + data.id + '" type="' + (this.type || 'text') + '" data-control-type="' + (this.controlType || '') + '" /></span>';
+  });
+
+  return html;
+}
+
 function getHTML() {
   return [
     '<div class="ghplus bubble" id="ghplus-container">',
       '<div class="discussion-bubble-inner">',
-        '<label for="ghplus-due-date">Due Date:</label>',
-        '<span><input id="ghplus-due-date" value="{{dueDate}}" /></span>',
-        '<label for="ghplus-estimated-hours">Hours Estimated:</label>',
-        '<span><input id="ghplus-estimated-hours" value="{{estimate}}" /></span>',
+        buildFieldsHTML(),
         '<span class="button-container">',
           '<a href="#" id="ghplus-cancel" class="minibutton danger comment-cancel-button">Cancel</a>',
           '<a href="#" id="ghplus-save" class="minibutton">Save</a>',
@@ -11380,16 +11386,18 @@ function getHTML() {
 }
 
 module.exports = buildTemplate;
-},{"jquery":"cKzUTx","jqueryui":"gBND6t","parse":"j14OBD"}],"parse":[function(require,module,exports){
-module.exports=require('j14OBD');
-},{}],"jqueryui":[function(require,module,exports){
-module.exports=require('gBND6t');
-},{}],11:[function(require,module,exports){
+
+},{"jquery":"9MIV+n","jqueryui":"MxOOMP","parse":"E7sp4P","template":"p+CiJW"}],"template":[function(require,module,exports){
+module.exports=require('p+CiJW');
+},{}],"parse":[function(require,module,exports){
+module.exports=require('E7sp4P');
+},{}],12:[function(require,module,exports){
 "use strict";
 
 var $        = require('jquery')
   , PlusData = require('../models/plus-data')
-  , template = require('../templates/template')
+  , template = require('../templates/plus-data')
+  ;
 
 function PlusDataView(model) {
   this.model = model
@@ -11397,35 +11405,35 @@ function PlusDataView(model) {
   this.el = template(model);
   this.updateFooter();
 
-  this.bind();
+  this._bind();
 
   // TODO: Does this belong in the model?
-  this.setClean();
+  this._setClean();
 }
 
-PlusDataView.prototype.setClean = function(dueDate, estimate) {
+PlusDataView.prototype._setClean = function(dueDate, estimate) {
   this.clean = {
     dueDate: this.model.dueDate,
     estimate: this.model.estimate
   };
 };
 
-PlusDataView.prototype.bind = function() {
+PlusDataView.prototype._bind = function() {
   this.el
-    .on('change', '#ghplus-due-date', $.proxy(this.dueDateChanged, this))
-    .on('change', '#ghplus-estimated-hours', $.proxy(this.estimateChanged, this))
-    .on('click', '#ghplus-cancel', $.proxy(this.cancel, this))
-    .on('click', '#ghplus-save', $.proxy(this.save, this));
+    .on('change', '#ghplus-due-date', $.proxy(this._dueDateChanged, this))
+    .on('change', '#ghplus-estimated-hours', $.proxy(this._estimateChanged, this))
+    .on('click', '#ghplus-_cancel', $.proxy(this._cancel, this))
+    .on('click', '#ghplus-save', $.proxy(this._save, this));
 };
 
-PlusDataView.prototype.cancel = function(e, el) {
+PlusDataView.prototype._cancel = function(e, el) {
   e.preventDefault();
 
   this.el.find('#ghplus-due-date').val(this.clean.dueDate);
   this.el.find('#ghplus-estimated-hours').val(this.clean.estimate);
 };
 
-PlusDataView.prototype.save = function(e, el) {
+PlusDataView.prototype._save = function(e, el) {
   e.preventDefault();
 
   // TODO: Move isDirty to the model?  Probably.
@@ -11435,15 +11443,15 @@ PlusDataView.prototype.save = function(e, el) {
       if (!err) {
         container.hide();
 
-        self.flashSave();
-        self.setClean();
+        self._flashSave();
+        self._setClean();
         self.updateFooter();
       }
     });
   }
 };
 
-PlusDataView.prototype.flashSave = function() {
+PlusDataView.prototype._flashSave = function() {
   this.el.addClass('saved');
 
   var self = this;
@@ -11452,11 +11460,11 @@ PlusDataView.prototype.flashSave = function() {
   }, 2000);
 }
 
-PlusDataView.prototype.dueDateChanged = function() {
+PlusDataView.prototype._dueDateChanged = function() {
   this.model.dueDate = this.el.find('#ghplus-due-date').val();
 };
 
-PlusDataView.prototype.estimateChanged = function() {
+PlusDataView.prototype._estimateChanged = function() {
   this.model.estimate = this.el.find('#ghplus-estimated-hours').val();
 };
 
@@ -11467,7 +11475,7 @@ PlusDataView.prototype.isDirty = function() {
 PlusDataView.prototype.prependTo = function(parent) {
   $(parent).prepend(this.el);
 
-  // This is a fix for a jquery bug.
+  // fix for http://bugs.jqueryui.com/ticket/8989
   $("#ui-datepicker-div").wrap('<div class="gh-plus" />');
 };
 
@@ -11481,7 +11489,16 @@ PlusDataView.prototype.updateFooter = function() {
 };
 
 module.exports = PlusDataView;
-},{"../models/plus-data":6,"../templates/template":8,"jquery":"cKzUTx"}],"jquery":[function(require,module,exports){
-module.exports=require('cKzUTx');
+
+},{"../models/plus-data":6,"../templates/plus-data":9,"jquery":"9MIV+n"}],"jqueryui":[function(require,module,exports){
+module.exports=require('MxOOMP');
+},{}],"p+CiJW":[function(require,module,exports){
+"use strict";
+
+module.exports = [
+  { label: "Due Date", id: "ghplus-due-date",  controlType: "datepicker" },
+  { label: "Hours Estimated", id: "ghplus-estimated-hours" }
+];
+
 },{}]},{},[1])
 ;

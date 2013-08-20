@@ -2,7 +2,8 @@
 
 var $        = require('jquery')
   , PlusData = require('../models/plus-data')
-  , template = require('../templates/template')
+  , template = require('../templates/plus-data')
+  ;
 
 function PlusDataView(model) {
   this.model = model

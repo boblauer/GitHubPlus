@@ -1,7 +1,8 @@
 "use strict";
 
-var $ = require('jquery')
-  , parse = require('parse')
+var $         = require('jquery')
+  , parse     = require('parse')
+  , fieldData = require('template');
   ;
 
 require('jqueryui');
@@ -15,14 +16,21 @@ function buildTemplate(locals) {
     .end();
 }
 
+function buildFieldsHTML() {
+  var html = '';
+  $.each(fieldData, function(index, data) {
+    html += '<label for="' + data.id + '">' + data.label + ':</label>';
+    html += '<span><input id="' + data.id + '" type="' + (this.type || 'text') + '" data-control-type="' + (this.controlType || '') + '" /></span>';
+  });
+
+  return html;
+}
+
 function getHTML() {
   return [
     '<div class="ghplus bubble" id="ghplus-container">',
       '<div class="discussion-bubble-inner">',
-        '<label for="ghplus-due-date">Due Date:</label>',
-        '<span><input id="ghplus-due-date" value="{{dueDate}}" /></span>',
-        '<label for="ghplus-estimated-hours">Hours Estimated:</label>',
-        '<span><input id="ghplus-estimated-hours" value="{{estimate}}" /></span>',
+        buildFieldsHTML(),
         '<span class="button-container">',
           '<a href="#" id="ghplus-cancel" class="minibutton danger comment-cancel-button">Cancel</a>',
           '<a href="#" id="ghplus-save" class="minibutton">Save</a>',
