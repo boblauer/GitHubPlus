@@ -1,7 +1,7 @@
 module.exports = {
   fields: [
-    { label: "Due Date", id: "ghplus-due-date",  controlType: "datepicker" },
-    { label: "Hours Estimated", id: "ghplus-estimated-hours" }
+    { label: "Due Date", id: "ghplus-due-date", type: "text", controlType: "datepicker" },
+    { label: "Hours Estimated", id: "ghplus-estimated-hours", type: "text" }
   ],
   repos: [
     'boblauer/GitHubPlus'

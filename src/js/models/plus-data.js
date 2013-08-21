@@ -46,8 +46,8 @@ PlusData.prototype.save = function(cb) {
   var self = this;
 
   if (this.isDirty()) {
-    this.updatedBy = this.user;
-    this.updatedOn = this._formatDate(new Date());
+    this.fields.updatedBy = this.user;
+    this.fields.updatedOn = this._formatDate(new Date());
 
     this.store.save(this.fields, function(err, data) {
       if (!err) {

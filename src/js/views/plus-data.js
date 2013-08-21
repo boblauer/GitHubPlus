@@ -9,7 +9,7 @@ function PlusDataView(model) {
   this.model = model;
 
   this.el = template(model.fields);
-  this.updateFooter();
+  this._updateFooter();
 
   this._bind();
 }
@@ -35,7 +35,7 @@ PlusDataView.prototype._save = function(e, el) {
       container.hide();
 
       self._flashSave();
-      self.updateFooter();
+      self._updateFooter();
     }
   });
 };
@@ -62,17 +62,17 @@ PlusDataView.prototype._fieldChaned = function(e) {
   this.model.fields[field.attr('id')] = field.val();
 };
 
-PlusDataView.prototype.prependTo = function(parent) {
-  $(parent).prepend(this.el);
-};
-
-PlusDataView.prototype.updateFooter = function() {
+PlusDataView.prototype._updateFooter = function() {
   var visibilityFn = this.model.fields.updatedOn ? 'show' : 'hide';
 
   this.el.find('.footnote')
     .find('.updated-by').text(this.model.fields.updatedBy).end()
     .find('.updated-on').text(this.model.fields.updatedOn).end()
     [visibilityFn]();
+};
+
+PlusDataView.prototype.prependTo = function(parent) {
+  $(parent).prepend(this.el);
 };
 
 module.exports = PlusDataView;
