@@ -1,24 +1,51 @@
-require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"mKRbVY":[function(require,module,exports){
+module.exports = {
+  fields: [
+    { label: "Due Date", id: "ghplus-due-date",  controlType: "datepicker" },
+    { label: "Hours Estimated", id: "ghplus-estimated-hours" }
+  ],
+  repos: [
+    'boblauer/jQasper',
+    'boblauer/GitHubPlus',
+    'ifit/ifit'
+  ]
+};
+
+},{}],2:[function(require,module,exports){
 var $            = require('jquery')
   , PlusData     = require('./models/plus-data')
   , PlusDataView = require('./views/plus-data')
+  , repos        = require('config').repos
   ;
+
+function init() {
+  if (isSupportedRepo()) {
+    var model = new PlusData(getUserName());
+    model.load();
+
+    var view = new PlusDataView(model);
+    view.prependTo('div.js-discussion');
+  }
+}
+
+function isSupportedRepo() {
+  var supported = false;
+  repos.forEach(function(repo) {
+    if (location.pathname.toLowerCase().match(repo.toLowerCase())) {
+      supported = true;
+    }
+  });
+
+  return supported;
+}
 
 function getUserName() {
   return $.trim($('#user-links').find('a.name').text());
 }
 
-function init() {
-  var model = new PlusData(getUserName());
-  model.load();
-
-  var view = new PlusDataView(model);
-  view.prependTo('div.js-discussion');
-}
-
 init();
 
-},{"./models/plus-data":6,"./views/plus-data":12,"jquery":"9MIV+n"}],2:[function(require,module,exports){
+},{"./models/plus-data":7,"./views/plus-data":13,"config":"mKRbVY","jquery":"9MIV+n"}],3:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.0.0
  * http://jquery.com/
@@ -8779,7 +8806,7 @@ var $ = require('./jquery-2.0.0');
 
 module.exports = $.noConflict();
 
-},{"./jquery-2.0.0":2}],"MxOOMP":[function(require,module,exports){
+},{"./jquery-2.0.0":3}],"MxOOMP":[function(require,module,exports){
 var global=self;(function browserifyShim(module, define) {
 /*! jQuery UI - v1.10.3 - 2013-08-15
 * http://jqueryui.com
@@ -11134,7 +11161,7 @@ function parse(s, o) {
 };
 
 module.exports = parse;
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 "use strict";
 
 var $         = require('jquery')
@@ -11204,20 +11231,17 @@ PlusData.prototype.load = function() {
 module.exports = PlusData;
 
 
-},{"../store/gh-comment":7,"jquery":"9MIV+n"}],7:[function(require,module,exports){
+},{"../store/gh-comment":8,"jquery":"9MIV+n"}],8:[function(require,module,exports){
 "use strict";
 
-var $ = require('jquery');
+var $   = require('jquery')
+  , key = 'gh+'
+  ;
 
 function GitHubComment() { }
 
-// TODO: require this instead?  Maybe not, minimal info.  More info I can extract?
-GitHubComment.config = {
-  commentKey: 'gh+'
-};
-
 GitHubComment._findAll = function() {
-  return $('code:contains(' + this.config.commentKey + ')');
+  return $('code:contains(' + key + ')');
 };
 
 GitHubComment._findLatest = function() {
@@ -11259,7 +11283,7 @@ GitHubComment._deserialize = function(data) {
 GitHubComment._buildComment = function(data) {
   var fullMessage = 'If you can see this, you do not have GitHub+ installed.  To install the extension, please visit: ';
   fullMessage += '\n';
-  fullMessage += '`' + this.config.commentKey + '``' + data + '``' + this.config.commentKey + '`';
+  fullMessage += '`' + key + '``' + data + '``' + key + '`';
 
   return fullMessage;
 };
@@ -11382,12 +11406,12 @@ module.exports = {
   validate: null
 };
 
-},{"jquery":"9MIV+n","jqueryui":"MxOOMP"}],9:[function(require,module,exports){
+},{"jquery":"9MIV+n","jqueryui":"MxOOMP"}],10:[function(require,module,exports){
 "use strict";
 
 var $         = require('jquery')
   , parse     = require('parse')
-  , fieldData = require('template');
+  , fieldData = require('config').fields;
   ;
 
 function buildTemplate(locals) {
@@ -11442,11 +11466,11 @@ function getHTML() {
 
 module.exports = buildTemplate;
 
-},{"jquery":"9MIV+n","parse":"E7sp4P","template":"p+CiJW"}],"template":[function(require,module,exports){
-module.exports=require('p+CiJW');
+},{"config":"mKRbVY","jquery":"9MIV+n","parse":"E7sp4P"}],"config":[function(require,module,exports){
+module.exports=require('mKRbVY');
 },{}],"parse":[function(require,module,exports){
 module.exports=require('E7sp4P');
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 
 var $        = require('jquery')
@@ -11526,19 +11550,11 @@ PlusDataView.prototype.updateFooter = function() {
 
 module.exports = PlusDataView;
 
-},{"../models/plus-data":6,"../templates/plus-data":9,"jquery":"9MIV+n"}],"datepicker":[function(require,module,exports){
+},{"../models/plus-data":7,"../templates/plus-data":10,"jquery":"9MIV+n"}],"datepicker":[function(require,module,exports){
 module.exports=require('UVwmUJ');
 },{}],"jqueryui":[function(require,module,exports){
 module.exports=require('MxOOMP');
-},{}],"p+CiJW":[function(require,module,exports){
-"use strict";
-
-module.exports = [
-  { label: "Due Date", id: "ghplus-due-date",  controlType: "datepicker" },
-  { label: "Hours Estimated", id: "ghplus-estimated-hours" }
-];
-
 },{}],"jquery":[function(require,module,exports){
 module.exports=require('9MIV+n');
-},{}]},{},[1])
+},{}]},{},[2])
 ;

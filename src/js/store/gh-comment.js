@@ -1,16 +1,13 @@
 "use strict";
 
-var $ = require('jquery');
+var $   = require('jquery')
+  , key = 'gh+'
+  ;
 
 function GitHubComment() { }
 
-// TODO: require this instead?  Maybe not, minimal info.  More info I can extract?
-GitHubComment.config = {
-  commentKey: 'gh+'
-};
-
 GitHubComment._findAll = function() {
-  return $('code:contains(' + this.config.commentKey + ')');
+  return $('code:contains(' + key + ')');
 };
 
 GitHubComment._findLatest = function() {
@@ -52,7 +49,7 @@ GitHubComment._deserialize = function(data) {
 GitHubComment._buildComment = function(data) {
   var fullMessage = 'If you can see this, you do not have GitHub+ installed.  To install the extension, please visit: ';
   fullMessage += '\n';
-  fullMessage += '`' + this.config.commentKey + '``' + data + '``' + this.config.commentKey + '`';
+  fullMessage += '`' + key + '``' + data + '``' + key + '`';
 
   return fullMessage;
 };

@@ -2,7 +2,7 @@
 
 var $         = require('jquery')
   , parse     = require('parse')
-  , fieldData = require('template');
+  , fieldData = require('config').fields;
   ;
 
 function buildTemplate(locals) {
