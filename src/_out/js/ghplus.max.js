@@ -5,9 +5,7 @@ module.exports = {
     { label: "Hours Estimated", id: "ghplus-estimated-hours" }
   ],
   repos: [
-    'boblauer/jQasper',
-    'boblauer/GitHubPlus',
-    'ifit/ifit'
+    'boblauer/GitHubPlus'
   ]
 };
 
@@ -11550,10 +11548,10 @@ PlusDataView.prototype.updateFooter = function() {
 
 module.exports = PlusDataView;
 
-},{"../models/plus-data":7,"../templates/plus-data":10,"jquery":"9MIV+n"}],"datepicker":[function(require,module,exports){
-module.exports=require('UVwmUJ');
-},{}],"jqueryui":[function(require,module,exports){
+},{"../models/plus-data":7,"../templates/plus-data":10,"jquery":"9MIV+n"}],"jqueryui":[function(require,module,exports){
 module.exports=require('MxOOMP');
+},{}],"datepicker":[function(require,module,exports){
+module.exports=require('UVwmUJ');
 },{}],"jquery":[function(require,module,exports){
 module.exports=require('9MIV+n');
 },{}]},{},[2])
