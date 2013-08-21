@@ -1,2 +1,5 @@
 node_modules
 .DS_Store
+_chrome/css
+_chrome/js
+src/_out
