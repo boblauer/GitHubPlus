@@ -4,8 +4,6 @@ var $            = require('jquery')
   , PlusDataView = require('./views/plus-data')
   ;
 
-require('jqueryui');
-
 function getUserName() {
   return $.trim($('#user-links').find('a.name').text());
 }
@@ -19,7 +17,8 @@ function init() {
 }
 
 init();
-},{"./models/plus-data":6,"./views/plus-data":12,"jquery":"9MIV+n","jqueryui":"MxOOMP"}],2:[function(require,module,exports){
+
+},{"./models/plus-data":6,"./views/plus-data":12,"jquery":"9MIV+n"}],2:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.0.0
  * http://jquery.com/
@@ -8779,6 +8778,7 @@ if ( typeof window === "object" && typeof window.document === "object" ) {
 var $ = require('./jquery-2.0.0');
 
 module.exports = $.noConflict();
+
 },{"./jquery-2.0.0":2}],"MxOOMP":[function(require,module,exports){
 var global=self;(function browserifyShim(module, define) {
 /*! jQuery UI - v1.10.3 - 2013-08-15
@@ -11144,10 +11144,12 @@ var $         = require('jquery')
 function PlusData(currentUser) {
   this.store = DataStore;
 
-  this.dueDate = null;
-  this.estimate = null;
-  this.updatedBy = null;
-  this.updatedOn = null;
+  this.fields = {
+    updatedBy: null,
+    updatedOn: null
+  };
+
+  this.clean = {};
 
   this.user = currentUser;
 }
@@ -11156,25 +11158,47 @@ PlusData.prototype._formatDate = function(date) {
   return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
 };
 
-PlusData.prototype._getSaveData = function() {
-  return {
-    dueDate: this.dueDate,
-    estimate: this.estimate,
-    updatedBy: this.updatedBy,
-    updatedOn: this.updatedOn
-  };
+PlusData.prototype.markAsClean = function() {
+  var self = this;
+
+  Object.keys(this.fields).forEach(function(fieldName) {
+    self.clean[fieldName] = self.fields[fieldName];
+  });
+};
+
+PlusData.prototype.isDirty = function() {
+  var self = this
+    , isDirty = false;
+
+  Object.keys(this.fields).forEach(function(fieldName) {
+    if (self.clean[fieldName] !== self.fields[fieldName]) {
+      isDirty = true;
+    }
+  });
+
+  return isDirty;
 };
 
 PlusData.prototype.save = function(cb) {
-  this.updatedBy = this.user;
-  this.updatedOn = this._formatDate(new Date());
+  var self = this;
 
-  this.store.save(this._getSaveData(), cb);
+  if (this.isDirty()) {
+    this.updatedBy = this.user;
+    this.updatedOn = this._formatDate(new Date());
+
+    this.store.save(this.fields, function(err, data) {
+      if (!err) {
+        self.markAsClean();
+      }
+
+      cb(err, data);
+    });
+  }
 };
 
 PlusData.prototype.load = function() {
-  var data = this.store.load();
-  $.extend(this, data);
+  $.extend(this.fields, this.store.load());
+  this.markAsClean();
 };
 
 module.exports = PlusData;
@@ -11238,7 +11262,7 @@ GitHubComment._buildComment = function(data) {
   fullMessage += '`' + this.config.commentKey + '``' + data + '``' + this.config.commentKey + '`';
 
   return fullMessage;
-}
+};
 
 GitHubComment._canEdit = function(latestComment) {
   return !!latestComment.parents('.comment:first').find('.js-comment-edit-button').length;
@@ -11285,8 +11309,8 @@ GitHubComment.errorOccurred = function() {
     error.attr('ghplus', true);
   }
 
-  return !!error.length
-}
+  return !!error.length;
+};
 
 GitHubComment._createNewComment = function(text) {
   this._setTextAndSave($('.write-content').find('textarea'), text);
@@ -11294,10 +11318,10 @@ GitHubComment._createNewComment = function(text) {
 
 GitHubComment._updateExistingComment = function(commentField, text) {
   var commentId = commentField.parents('div[id^=issuecomment]').attr('id').split('-')[1]
-    , commentField = $('textarea[data-suggester=issue_comment_' + commentId + '_suggester]')
+    , commentTextField = $('textarea[data-suggester=issue_comment_' + commentId + '_suggester]')
     ;
 
-   this._setTextAndSave(commentField, text);
+   this._setTextAndSave(commentTextField, text);
 };
 
 GitHubComment._setTextAndSave = function(textArea, text) {
@@ -11314,7 +11338,7 @@ GitHubComment._setTextAndSave = function(textArea, text) {
     formActions.find(saveButtonSelector).click();
   }
   else {
-    alert('ERROR: Unable to find the correct submit button');
+    console.error('ERROR: Unable to find the correct submit button');
   }
 };
 
@@ -11338,9 +11362,27 @@ GitHubComment.load = function() {
 };
 
 module.exports = GitHubComment;
-},{"jquery":"9MIV+n"}],"jquery":[function(require,module,exports){
-module.exports=require('9MIV+n');
-},{}],9:[function(require,module,exports){
+
+},{"jquery":"9MIV+n"}],"UVwmUJ":[function(require,module,exports){
+"use strict";
+
+var $ = require('jquery');
+
+require('jqueryui');
+
+function init(el) {
+  $(el).datepicker();
+
+  // fix for http://bugs.jqueryui.com/ticket/8989
+  $("#ui-datepicker-div").wrap('<div class="gh-plus" />');
+}
+
+module.exports = {
+  init: init,
+  validate: null
+};
+
+},{"jquery":"9MIV+n","jqueryui":"MxOOMP"}],9:[function(require,module,exports){
 "use strict";
 
 var $         = require('jquery')
@@ -11348,15 +11390,28 @@ var $         = require('jquery')
   , fieldData = require('template');
   ;
 
-require('jqueryui');
-
 function buildTemplate(locals) {
-  var html = getHTML();
-  html = parse(html, locals);
+  var html = parse(getHTML(), locals)
+    , el = $(html)
+    ;
 
-  return $(html)
-    .find('#ghplus-due-date').datepicker()
-    .end();
+  el.find('input').each(function() {
+    var input = $(this)
+      , id = input.attr('id')
+      , controlType = $(input).data('controlType');
+
+    if (controlType) {
+      var controlMethods = require(controlType);
+      if (controlMethods.init) {
+        controlMethods.init(this);
+      }
+      // TODO: control.validate
+    }
+
+    input.val(locals[id]);
+  })
+
+  return el;
 }
 
 function buildFieldsHTML() {
@@ -11381,13 +11436,13 @@ function getHTML() {
         '<div class="footnote"><span>Last edited by <span class="updated-by">{{updatedBy}}</span> on <span class="updated-on">{{updatedOn}}</span></span></div>',
       '</div>',
     '</div>',
-    '<div class="closed-banner"></div>'
+    '<div class="closed-banner" id="ghplus-separator"></div>'
   ].join('');
 }
 
 module.exports = buildTemplate;
 
-},{"jquery":"9MIV+n","jqueryui":"MxOOMP","parse":"E7sp4P","template":"p+CiJW"}],"template":[function(require,module,exports){
+},{"jquery":"9MIV+n","parse":"E7sp4P","template":"p+CiJW"}],"template":[function(require,module,exports){
 module.exports=require('p+CiJW');
 },{}],"parse":[function(require,module,exports){
 module.exports=require('E7sp4P');
@@ -11400,55 +11455,38 @@ var $        = require('jquery')
   ;
 
 function PlusDataView(model) {
-  this.model = model
+  this.model = model;
 
-  this.el = template(model);
+  this.el = template(model.fields);
   this.updateFooter();
 
   this._bind();
-
-  // TODO: Does this belong in the model?
-  this._setClean();
 }
-
-PlusDataView.prototype._setClean = function(dueDate, estimate) {
-  this.clean = {
-    dueDate: this.model.dueDate,
-    estimate: this.model.estimate
-  };
-};
-
-PlusDataView.prototype._bind = function() {
-  this.el
-    .on('change', '#ghplus-due-date', $.proxy(this._dueDateChanged, this))
-    .on('change', '#ghplus-estimated-hours', $.proxy(this._estimateChanged, this))
-    .on('click', '#ghplus-_cancel', $.proxy(this._cancel, this))
-    .on('click', '#ghplus-save', $.proxy(this._save, this));
-};
 
 PlusDataView.prototype._cancel = function(e, el) {
   e.preventDefault();
 
-  this.el.find('#ghplus-due-date').val(this.clean.dueDate);
-  this.el.find('#ghplus-estimated-hours').val(this.clean.estimate);
+  var self = this;
+  this.el.find('input').each(function(i, input) {
+    input = $(input);
+
+    var id = input.attr('id');
+    input.val(self.model.clean[id]);
+  });
 };
 
 PlusDataView.prototype._save = function(e, el) {
   e.preventDefault();
 
-  // TODO: Move isDirty to the model?  Probably.
-  if (this.isDirty()) {
-    var self = this;
-    this.model.save(function(err, container) {
-      if (!err) {
-        container.hide();
+  var self = this;
+  this.model.save(function(err, container) {
+    if (!err) {
+      container.hide();
 
-        self._flashSave();
-        self._setClean();
-        self.updateFooter();
-      }
-    });
-  }
+      self._flashSave();
+      self.updateFooter();
+    }
+  });
 };
 
 PlusDataView.prototype._flashSave = function() {
@@ -11458,39 +11496,39 @@ PlusDataView.prototype._flashSave = function() {
   setTimeout(function() {
     self.el.removeClass('saved');
   }, 2000);
-}
-
-PlusDataView.prototype._dueDateChanged = function() {
-  this.model.dueDate = this.el.find('#ghplus-due-date').val();
 };
 
-PlusDataView.prototype._estimateChanged = function() {
-  this.model.estimate = this.el.find('#ghplus-estimated-hours').val();
+
+PlusDataView.prototype._bind = function() {
+  this.el
+    .on('change', 'input', $.proxy(this._fieldChaned, this))
+    .on('click', '#ghplus-cancel', $.proxy(this._cancel, this))
+    .on('click', '#ghplus-save', $.proxy(this._save, this));
 };
 
-PlusDataView.prototype.isDirty = function() {
-  return this.model.dueDate !== this.clean.dueDate || this.model.estimate !== this.clean.estimate;
+PlusDataView.prototype._fieldChaned = function(e) {
+  var field = $(e.target);
+  this.model.fields[field.attr('id')] = field.val();
 };
 
 PlusDataView.prototype.prependTo = function(parent) {
   $(parent).prepend(this.el);
-
-  // fix for http://bugs.jqueryui.com/ticket/8989
-  $("#ui-datepicker-div").wrap('<div class="gh-plus" />');
 };
 
 PlusDataView.prototype.updateFooter = function() {
-  var visibilityFn = this.model.updatedOn ? 'show' : 'hide';
+  var visibilityFn = this.model.fields.updatedOn ? 'show' : 'hide';
 
   this.el.find('.footnote')
-    .find('.updated-by').text(this.model.updatedBy).end()
-    .find('.updated-on').text(this.model.updatedOn).end()
+    .find('.updated-by').text(this.model.fields.updatedBy).end()
+    .find('.updated-on').text(this.model.fields.updatedOn).end()
     [visibilityFn]();
 };
 
 module.exports = PlusDataView;
 
-},{"../models/plus-data":6,"../templates/plus-data":9,"jquery":"9MIV+n"}],"jqueryui":[function(require,module,exports){
+},{"../models/plus-data":6,"../templates/plus-data":9,"jquery":"9MIV+n"}],"datepicker":[function(require,module,exports){
+module.exports=require('UVwmUJ');
+},{}],"jqueryui":[function(require,module,exports){
 module.exports=require('MxOOMP');
 },{}],"p+CiJW":[function(require,module,exports){
 "use strict";
@@ -11500,5 +11538,7 @@ module.exports = [
   { label: "Hours Estimated", id: "ghplus-estimated-hours" }
 ];
 
+},{}],"jquery":[function(require,module,exports){
+module.exports=require('9MIV+n');
 },{}]},{},[1])
 ;

@@ -7,10 +7,12 @@ var $         = require('jquery')
 function PlusData(currentUser) {
   this.store = DataStore;
 
-  this.dueDate = null;
-  this.estimate = null;
-  this.updatedBy = null;
-  this.updatedOn = null;
+  this.fields = {
+    updatedBy: null,
+    updatedOn: null
+  };
+
+  this.clean = {};
 
   this.user = currentUser;
 }
@@ -19,25 +21,47 @@ PlusData.prototype._formatDate = function(date) {
   return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
 };
 
-PlusData.prototype._getSaveData = function() {
-  return {
-    dueDate: this.dueDate,
-    estimate: this.estimate,
-    updatedBy: this.updatedBy,
-    updatedOn: this.updatedOn
-  };
+PlusData.prototype.markAsClean = function() {
+  var self = this;
+
+  Object.keys(this.fields).forEach(function(fieldName) {
+    self.clean[fieldName] = self.fields[fieldName];
+  });
+};
+
+PlusData.prototype.isDirty = function() {
+  var self = this
+    , isDirty = false;
+
+  Object.keys(this.fields).forEach(function(fieldName) {
+    if (self.clean[fieldName] !== self.fields[fieldName]) {
+      isDirty = true;
+    }
+  });
+
+  return isDirty;
 };
 
 PlusData.prototype.save = function(cb) {
-  this.updatedBy = this.user;
-  this.updatedOn = this._formatDate(new Date());
+  var self = this;
 
-  this.store.save(this._getSaveData(), cb);
+  if (this.isDirty()) {
+    this.updatedBy = this.user;
+    this.updatedOn = this._formatDate(new Date());
+
+    this.store.save(this.fields, function(err, data) {
+      if (!err) {
+        self.markAsClean();
+      }
+
+      cb(err, data);
+    });
+  }
 };
 
 PlusData.prototype.load = function() {
-  var data = this.store.load();
-  $.extend(this, data);
+  $.extend(this.fields, this.store.load());
+  this.markAsClean();
 };
 
 module.exports = PlusData;

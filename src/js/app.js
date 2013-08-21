@@ -3,8 +3,6 @@ var $            = require('jquery')
   , PlusDataView = require('./views/plus-data')
   ;
 
-require('jqueryui');
-
 function getUserName() {
   return $.trim($('#user-links').find('a.name').text());
 }

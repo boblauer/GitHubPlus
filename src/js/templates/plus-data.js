@@ -5,15 +5,28 @@ var $         = require('jquery')
   , fieldData = require('template');
   ;
 
-require('jqueryui');
-
 function buildTemplate(locals) {
-  var html = getHTML();
-  html = parse(html, locals);
+  var html = parse(getHTML(), locals)
+    , el = $(html)
+    ;
 
-  return $(html)
-    .find('#ghplus-due-date').datepicker()
-    .end();
+  el.find('input').each(function() {
+    var input = $(this)
+      , id = input.attr('id')
+      , controlType = $(input).data('controlType');
+
+    if (controlType) {
+      var controlMethods = require(controlType);
+      if (controlMethods.init) {
+        controlMethods.init(this);
+      }
+      // TODO: control.validate
+    }
+
+    input.val(locals[id]);
+  })
+
+  return el;
 }
 
 function buildFieldsHTML() {
@@ -38,7 +51,7 @@ function getHTML() {
         '<div class="footnote"><span>Last edited by <span class="updated-by">{{updatedBy}}</span> on <span class="updated-on">{{updatedOn}}</span></span></div>',
       '</div>',
     '</div>',
-    '<div class="closed-banner"></div>'
+    '<div class="closed-banner" id="ghplus-separator"></div>'
   ].join('');
 }
 

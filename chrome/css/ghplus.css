@@ -1,4 +1,4 @@
-.gh-plus div.ui-datepicker {
+.gh-plus .ui-datepicker {
   font-size: 10px;
 }
 
@@ -67,4 +67,8 @@
   color: #777;
   font-size: 9px;
   font-style: italic;
+}
+
+#ghplus-separator {
+  margin-left: 0;
 }

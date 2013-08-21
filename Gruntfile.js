@@ -12,7 +12,8 @@ module.exports = function(grunt) {
           alias: [
             'src/js/libs/jquery-shim.js:jquery',
             'src/js/libs/parse.js:parse',
-            './template.js:template'
+            './template.js:template',
+            'src/js/templates/field-types/datepicker.js:datepicker'
           ],
           shim: {
             jqueryui: {

@@ -55,7 +55,7 @@ GitHubComment._buildComment = function(data) {
   fullMessage += '`' + this.config.commentKey + '``' + data + '``' + this.config.commentKey + '`';
 
   return fullMessage;
-}
+};
 
 GitHubComment._canEdit = function(latestComment) {
   return !!latestComment.parents('.comment:first').find('.js-comment-edit-button').length;
@@ -102,8 +102,8 @@ GitHubComment.errorOccurred = function() {
     error.attr('ghplus', true);
   }
 
-  return !!error.length
-}
+  return !!error.length;
+};
 
 GitHubComment._createNewComment = function(text) {
   this._setTextAndSave($('.write-content').find('textarea'), text);
@@ -111,10 +111,10 @@ GitHubComment._createNewComment = function(text) {
 
 GitHubComment._updateExistingComment = function(commentField, text) {
   var commentId = commentField.parents('div[id^=issuecomment]').attr('id').split('-')[1]
-    , commentField = $('textarea[data-suggester=issue_comment_' + commentId + '_suggester]')
+    , commentTextField = $('textarea[data-suggester=issue_comment_' + commentId + '_suggester]')
     ;
 
-   this._setTextAndSave(commentField, text);
+   this._setTextAndSave(commentTextField, text);
 };
 
 GitHubComment._setTextAndSave = function(textArea, text) {
@@ -131,7 +131,7 @@ GitHubComment._setTextAndSave = function(textArea, text) {
     formActions.find(saveButtonSelector).click();
   }
   else {
-    alert('ERROR: Unable to find the correct submit button');
+    console.error('ERROR: Unable to find the correct submit button');
   }
 };
 
