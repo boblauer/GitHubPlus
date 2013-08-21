@@ -1,4 +1,4 @@
-GitHubPlus
+GitHub+
 ==========
 
 Chrome Extension for GitHub

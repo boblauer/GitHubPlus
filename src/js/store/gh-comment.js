@@ -1,6 +1,7 @@
 "use strict";
 
 var $   = require('jquery')
+  , msg = require('config').notInstalledMessage
   , key = 'gh+'
   ;
 
@@ -47,7 +48,7 @@ GitHubComment._deserialize = function(data) {
 };
 
 GitHubComment._buildComment = function(data) {
-  var fullMessage = 'If you can see this, you do not have GitHub+ installed.  To install the extension, please visit: ';
+  var fullMessage = msg;
   fullMessage += '\n';
   fullMessage += '`' + key + '``' + data + '``' + key + '`';
 
