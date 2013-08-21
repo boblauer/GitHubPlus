@@ -46,7 +46,7 @@ PlusDataView.prototype._flashSave = function() {
   var self = this;
   setTimeout(function() {
     self.el.removeClass('saved');
-  }, 2000);
+  }, 2e3);
 };
 
 

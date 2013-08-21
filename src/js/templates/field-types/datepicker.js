@@ -12,6 +12,5 @@ function init(el) {
 }
 
 module.exports = {
-  init: init,
-  validate: null
+  init: init
 };

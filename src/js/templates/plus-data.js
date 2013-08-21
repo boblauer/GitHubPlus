@@ -2,7 +2,7 @@
 
 var $         = require('jquery')
   , parse     = require('parse')
-  , fieldData = require('config').fields;
+  , fieldData = require('config').fields
   ;
 
 function buildTemplate(locals) {
@@ -20,11 +20,10 @@ function buildTemplate(locals) {
       if (controlMethods.init) {
         controlMethods.init(this);
       }
-      // TODO: control.validate
     }
 
     input.val(locals[id]);
-  })
+  });
 
   return el;
 }
