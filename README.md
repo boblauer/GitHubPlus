@@ -1,6 +1,3 @@
-GitHub+
-==========
-
 ## What is GitHub+?
 GitHub+ is a browser extension that adds custom fields to GitHub issues.  These custom fields are configurable, and can hold whatever data you find useful for your repository.  Out of the box, GitHub+ adds 'Due Date' and 'Hours Estimated' fields.
 
