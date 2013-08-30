@@ -9,6 +9,7 @@ function PlusDataView(model) {
   this.model = model;
 
   this.el = template(model.fields);
+  this._insertPullRequest();
   this._updateFooter();
 
   this._bind();
@@ -69,6 +70,15 @@ PlusDataView.prototype._updateFooter = function() {
     .find('.updated-by').text(this.model.fields.updatedBy).end()
     .find('.updated-on').text(this.model.fields.updatedOn).end()
     [visibilityFn]();
+};
+
+PlusDataView.prototype._insertPullRequest = function() {
+  var clone = $('div.js-comment').filter('[id*=pullrequest]:last').clone()
+    .css('border', '1px solid #cacaca')
+    .css('marginTop', '20px')
+    .removeAttr('id');
+
+  this.el.splice(1, 0, clone.get(0));
 };
 
 PlusDataView.prototype.prependTo = function(parent) {
