@@ -2,7 +2,7 @@
   // Required
   "manifest_version": 2,
   "name": "GitHub+",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",
@@ -11,7 +11,7 @@
   "description": "Adds extra features to GitHub issues.",
   "author": "Bob Lauer",
   "content_scripts": [{
-    "matches": ["https://github.com/*/*/issues/*"],
+    "matches": ["https://github.com/*/*/issues/*", "https://github.com/*/*/pull/*"],
     "js": ["js/_inject.js"],
     "css": ["css/ghplus.css"],
     "run_at": "document_end"
