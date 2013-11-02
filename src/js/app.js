@@ -1,17 +1,41 @@
 var $            = require('jquery')
   , PlusData     = require('./models/plus-data')
   , PlusDataView = require('./views/plus-data')
+  , TabStripView = require('./views/tab-strip')
   , repos        = require('config').repos
   ;
 
 function init() {
   if (isSupportedRepo()) {
-    var model = new PlusData(getUserName());
-    model.load();
 
-    var view = new PlusDataView(model);
-    view.prependTo('div.js-discussion');
+    if (isIssue()) {
+      loadPlusDataView();
+    }
+    else if (isPullRequest()) {
+      loadTabStripView();
+    }
   }
+}
+
+function isIssue() {
+  return (/\/issues\//).test(location.href);
+}
+
+function isPullRequest() {
+  return (/\/pull\//).test(location.href);
+}
+
+
+function loadPlusDataView() {
+  var model = new PlusData(getUserName());
+  model.load();
+
+  var plusDataView = new PlusDataView(model);
+  plusDataView.prependTo('div.js-discussion');
+}
+
+function loadTabStripView() {
+  var tabStripView = new TabStripView();
 }
 
 function isSupportedRepo() {
