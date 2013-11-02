@@ -73,12 +73,16 @@ PlusDataView.prototype._updateFooter = function() {
 };
 
 PlusDataView.prototype._insertPullRequest = function() {
-  var clone = $('div.js-comment').filter('[id*=pullrequest]:last').clone()
-    .css('border', '1px solid #cacaca')
-    .css('marginTop', '20px')
-    .removeAttr('id');
+  var pullRequest = $('div.js-comment').filter('[id*=pullrequest]:last');
 
-  this.el.splice(1, 0, clone.get(0));
+  if (pullRequest.length) {
+    pullRequest = pullRequest.clone()
+      .css('border', '1px solid #cacaca')
+      .css('marginTop', '20px')
+      .removeAttr('id');
+
+    this.el.splice(1, 0, pullRequest.get(0));
+  }
 };
 
 PlusDataView.prototype.prependTo = function(parent) {
