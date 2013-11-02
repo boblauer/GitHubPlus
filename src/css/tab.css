@@ -1,0 +1,10 @@
+.gh-plus-inline-discussion {
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin: 20px 0;
+}
+
+.gh-plus-inline-discussion .js-infobar {
+  display: none;
+}
