@@ -1,4 +1,3 @@
-// var tab = $('.tabnav-tabs:first').children(':first').clone()
 "use strict";
 
 var $ = require('jquery')
