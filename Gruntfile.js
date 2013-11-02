@@ -30,7 +30,7 @@ module.exports = function(grunt) {
     },
     concat: {
       css: {
-        src: ['src/css/jquery-ui-1.10.3.custom.css', 'src/css/ghplus.css'],
+        src: ['src/css/jquery-ui-1.10.3.custom.css', 'src/css/ghplus.css', 'src/css/tab.css'],
         dest: 'src/_out/css/ghplus.max.css',
       },
     },
