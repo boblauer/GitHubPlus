@@ -55,7 +55,6 @@ module.exports = {
 ```type```: The input field type.  Defaults to "text".
 
 ```controlType```: This is a field for custom controls.  For every controlType, there needs to be an accompanying JavaScript file so GitHub+ knows how to build the control.  Take a look at src/js/templates/field-types/datepicker.js to see what I mean.
-```
 
 ##### repos
 This is an array of GitHub repositories that the plugin will be loaded on.  You don't want the plugin loading itself on all GitHub repositories, because it's only useful when you're using it with other people working on the same project.
